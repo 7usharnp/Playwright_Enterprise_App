@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import HomePage from "../pages/HomePage";
+import logger from "../utils/LoggerUtil";
 
 export default class LoginPage{
     private readonly usernameInputSelector = "#username";
@@ -10,15 +11,19 @@ export default class LoginPage{
 
     }
     async navigateToLoginPage(){
-        await this.page.goto("https://login.salesforce.com/");
+        await this.page.goto("/");
+         logger.info("Navigated to login page");
+
     }
 
     async fillUsername(username: string){
-        await this.page.locator(this.usernameInputSelector).fill(username);  
+        await this.page.locator(this.usernameInputSelector).fill(username);
+        logger.info("entered username.");  
     }
 
     async fillPassword(password:string){
         await this.page.locator(this.passwordInputSelector).fill(password);
+        logger.info("entered password");
     }
 
     async clickLoginBtn(){
@@ -26,9 +31,9 @@ export default class LoginPage{
            .locator(this.loginButtonSelector)
            .click()
            .catch((error)=>{
-            console.error(`Error clicking login button : ${error}`)
+            logger.error(`Error clicking login button : ${error}`)
             throw error;
-           });
+           }).then(()=> logger.info("Clicked on login button"));
            const homePage =  new HomePage(this.page);
            return homePage;
     }
